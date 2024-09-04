@@ -1,0 +1,276 @@
+//Keyboard Pattern recorder with samples this time» by Frank Bonarrigo
+//from http://sccode.org/1-5i7
+
+(
+// Function to create our keyboard
+~createKeyboard = {
+    var startTime, currentOctave = 0;
+    var keyboardActive = false;
+    var chordNotes = Set.new;
+    var buffer;
+
+    // Load the audio file
+    buffer = Buffer.read(s, "/Users/danielfishkin/projects/corpus_daxophone/daxSAMPLES_NEW/daxCHORD.wav");
+
+
+    // Define a sampler synth
+    SynthDef(\samplerSynth, { |out=0, bufnum, rate=1, amp=0.1, gate=1|
+        var sig, env;
+        env = EnvGen.kr(Env.adsr(0.01, 0.7, 1, 2.4), gate, doneAction: 2);
+        sig = PlayBuf.ar(2, bufnum, rate * BufRateScale.kr(bufnum), loop: 0) * env * amp;
+        Out.ar(out, sig);
+    }).add;
+
+    // Create a window for the keyboard
+    ~win = Window("Sampler Keyboard with Chord Recording", Rect(100, 100, 1000, 400)).front;
+
+    // Define note names and their corresponding chromatic scale degrees for two octaves
+    ~notes = [\C, \Cs, \D, \Ds, \E, \F, \Fs, \G, \Gs, \A, \As, \B,
+               \C, \Cs, \D, \Ds, \E, \F, \Fs, \G, \Gs, \A, \As, \B];
+    ~scaleDegrees = (0..23);
+
+    // Define keyboard mapping
+    ~keyboardMap = Dictionary[
+        $a -> 0, $w -> 1, $s -> 2, $e -> 3, $d -> 4, $f -> 5, $t -> 6, $g -> 7, $y -> 8, $h -> 9, $u -> 10, $j -> 11,
+        $k -> 12, $o -> 13, $l -> 14, $p -> 15, $; -> 16, $' -> 17,
+        $z -> 0, $x -> 2, $c -> 4, $v -> 5, $b -> 7, $n -> 9, $m -> 11, $, -> 12, $. -> 14, $/ -> 16
+    ];
+
+    // Array to store the sequence of played notes and chords with timing
+    ~sequence = List[];
+
+    // Timing capture flag
+    ~capturingTime = false;
+
+    // Dictionary to store active synths
+    ~activeSynths = Dictionary.new;
+
+    // Function to play a note
+    ~playNote = { |degree|
+        var adjustedDegree = degree + (currentOctave * 12);
+        var rate = 2.pow(adjustedDegree / 12);  // Calculate playback rate
+        var synth;
+
+        // Stop the previous synth for this degree if it exists
+        ~activeSynths[adjustedDegree].do({ |syn| syn.set(\gate, 0) });
+
+        synth = Synth(\samplerSynth, [\bufnum, buffer, \rate, rate, \amp, 0.5]);
+        ~activeSynths[adjustedDegree] = synth;
+
+        chordNotes.add(adjustedDegree);
+
+        if(~capturingTime, {
+            var elapsedTime = Main.elapsedTime - startTime;
+            if(chordNotes.size > 1, {
+                ~sequence.add([chordNotes.asArray.sort, elapsedTime.round(0.001)]);
+            }, {
+                ~sequence.add([adjustedDegree, elapsedTime.round(0.001)]);
+            });
+        }, {
+            if(chordNotes.size > 1, {
+                ~sequence.add([chordNotes.asArray.sort, nil]);
+            }, {
+                ~sequence.add([adjustedDegree, nil]);
+            });
+        });
+
+        // Update button state
+        if(degree < 24, {
+            ~buttons[degree].states = [[~notes[degree].asString, Color.white, Color.black]];
+            AppClock.sched(0.2, {
+                ~buttons[degree].states = [[~notes[degree].asString, Color.black, Color.white]];
+                nil
+            });
+        });
+    };
+
+    // Function to stop a note
+    ~stopNote = { |degree|
+        var adjustedDegree = degree + (currentOctave * 12);
+        ~activeSynths[adjustedDegree].do({ |syn| syn.set(\gate, 0) });
+        ~activeSynths[adjustedDegree] = nil;
+        chordNotes.remove(adjustedDegree);
+    };
+
+    // Create buttons for each note
+    ~buttons = ~notes.collect({ |note, i|
+        Button(~win, Rect(10 + (i * 40), 10, 35, 100))
+            .states_([[note.asString, Color.black, Color.white]])
+            .mouseDownAction_({ ~playNote.(i) })
+            .mouseUpAction_({ ~stopNote.(i) });
+    });
+
+    // Create a text field to display the sequence
+    ~seqDisplay = TextView(~win, Rect(10, 120, 980, 100))
+        .string_("Played sequence: ")
+        .editable_(false);
+
+    // Create buttons for various actions
+    Button(~win, Rect(10, 230, 100, 30))
+        .states_([["Clear Sequence"]])
+        .action_({
+            ~sequence.clear;
+            ~seqDisplay.string_("Played sequence: ");
+        });
+
+    Button(~win, Rect(120, 230, 100, 30))
+        .states_([["Print Sequence"]])
+        .action_({
+            var noteArray, durArray;
+            noteArray = ~sequence.collect({ |item| item[0] });
+            durArray = ~sequence.collect({ |item, i|
+                if(item[1].isNil, {
+                    0.5  // Default duration if no timestamp
+                }, {
+                    if(i == 0, {
+                        0.5  // Default duration for the first note/chord
+                    }, {
+                        var prevTime = ~sequence[i-1][1];
+                        if(prevTime.isNil, {
+                            0.5  // Default duration if previous timestamp is missing
+                        }, {
+                            (item[1] - prevTime).max(0.01)  // Ensure positive duration
+                        });
+                    });
+                });
+            });
+            "Note/Chord Array:".postln;
+            noteArray.postln;
+            "Duration Array:".postln;
+            durArray.postln;
+            "Pbind pattern:".postln;
+            ("Pbind(\\degree, " ++ noteArray.collect({|item| item.asArray}).asCompileString ++
+             ", \\dur, " ++ durArray.asCompileString ++ ")").postln;
+        });
+
+    Button(~win, Rect(230, 230, 100, 30))
+    .states_([["Play Sequence"]])
+    .action_({
+        Routine({
+            var prevTime = 0;
+            ~sequence.do({ |item|
+                var degrees = item[0].asArray;
+                var time = item[1];
+                var synths;
+                if(time.notNil, {
+                    (time - prevTime).wait;
+                    prevTime = time;
+                }, {
+                    0.5.wait;
+                });
+                synths = degrees.collect({ |degree|
+                    var rate = 2.pow(degree / 12);  // Calculate playback rate
+                    Synth(\samplerSynth, [\bufnum, buffer, \rate, rate, \amp, 0.5]);
+                });
+                AppClock.sched(0.2, { synths.do(_.set(\gate, 0)); nil });
+            });
+        }).play;
+    });
+
+    ~timingButton = Button(~win, Rect(340, 230, 150, 30))
+        .states_([
+            ["Start Timing Capture", Color.black, Color.green],
+            ["Stop Timing Capture", Color.white, Color.red]
+        ])
+        .action_({ |but|
+            if(but.value == 1, {
+                ~capturingTime = true;
+                startTime = Main.elapsedTime;
+            }, {
+                ~capturingTime = false;
+            });
+        });
+
+    // Create buttons for octave shifting
+    Button(~win, Rect(500, 230, 100, 30))
+        .states_([["Octave Down"]])
+        .action_({
+            currentOctave = (currentOctave - 1).clip(-1, 7);
+            ~updateOctaveDisplay.value;
+        });
+
+    Button(~win, Rect(610, 230, 100, 30))
+        .states_([["Octave Up"]])
+        .action_({
+            currentOctave = (currentOctave + 1).clip(-1, 7);
+            ~updateOctaveDisplay.value;
+        });
+
+    // Display current octave
+    ~octaveDisplay = StaticText(~win, Rect(720, 230, 100, 30))
+        .string_("Octave: 0")
+        .align_(\center);
+
+    ~updateOctaveDisplay = {
+        ~octaveDisplay.string_("Octave: " ++ currentOctave);
+    };
+
+    // New button to activate/deactivate keyboard input
+    Button(~win, Rect(830, 230, 150, 30))
+        .states_([
+            ["Activate Keyboard", Color.black, Color.green],
+            ["Deactivate Keyboard", Color.white, Color.red]
+        ])
+        .action_({ |but|
+            keyboardActive = but.value == 1;
+            if(keyboardActive, {
+                ~win.view.focus(true);
+            });
+        });
+
+    // Update sequence display function
+    ~updateSeqDisplay = {
+        ~seqDisplay.string_("Played sequence: " ++ ~sequence.collect({ |item|
+            var notes = item[0];
+            var time = item[1];
+            var noteStr = if(notes.isArray, {
+                "[" ++ notes.collect(_.asString).join(", ") ++ "]"
+            }, {
+                notes.asString
+            });
+            if(time.isNil, {
+                noteStr
+            }, {
+                noteStr ++ "@" ++ time.round(0.001).asString
+            });
+        }).join(", "));
+    };
+
+    // Set up a routine to periodically update the sequence display
+    Routine({
+        loop {
+            ~updateSeqDisplay.();
+            0.1.wait;
+        }
+    }).play(AppClock);
+
+    // Add key responder
+    ~win.view.keyDownAction = { |view, char, modifiers, unicode, keycode|
+        if(keyboardActive, {
+            var degree = ~keyboardMap[char.toLower];
+            if(degree.notNil, {
+                ~playNote.(degree);
+            });
+            // Number keys for octave selection
+            if(char.isDecDigit, {
+                var num = char.digit;
+                currentOctave = num - 2;  // Shift range to be from -1 to 7
+                currentOctave = currentOctave.clip(-1, 7);  // Limit range
+                ~updateOctaveDisplay.value;
+            });
+        });
+    };
+
+    ~win.view.keyUpAction = { |view, char, modifiers, unicode, keycode|
+        if(keyboardActive, {
+            var degree = ~keyboardMap[char.toLower];
+            if(degree.notNil, {
+                ~stopNote.(degree);
+            });
+        });
+    };
+};
+
+// Execute the function immediately
+~createKeyboard.value;
+)
