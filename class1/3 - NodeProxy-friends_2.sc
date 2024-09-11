@@ -17,6 +17,7 @@ b.source = {Mix.ar(Array.fill(d, { Resonz.ar(Dust.ar(2/d, 50), 200 + 3000.0.rand
 // Now create the main processing chain that uses NodeProxy b
 b = b.play;
 
+
 // Main processing chain
 (
     play({
@@ -105,10 +106,10 @@ b = b.play;
 );
 )
 
-b.fadeTime = 5; // set fade time
+b.fadeTime = 3; // set fade time
 
 // Example: After some time, switch to a different source
-(	 ~d=6;
+(	 ~d=1;
 	b.source = {    Decay.ar(Dust.ar(12 / ~d, 0.2), 0.15, PinkNoise.ar)};)
 
 // Clear NodeProxy b after 3 seconds if needed
