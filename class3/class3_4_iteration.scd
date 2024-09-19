@@ -1,8 +1,4 @@
-Hey everyone, welcome to tutorial number 6. In this video I'll talk about iteration and how it can be used for audio synthesis. Iteration is a topic in and of itself, but essentially, iteration is a repeating process. It enables the user to execute a block of code many times over, usually until some condition is met or a certain number of iterations have been performed.
 
-It's very common to iterate over a collection of items. And by this I mean you take a collection, and one-by-one, pass the individual items into a function as input arguments. In the class library there's an object called Collection, which is the parent of many useful subclasses, listed here at the top. There's also a file called Collections, that outlines the subclass hierarchy. One of these subclasses is Array, which we're already sort of familiar with.
-
-Back in the Collection help file, we can do a search for the word "iteration", which takes us to a list of relevant methods. There are quite a few, but the most generalized method is called "do", which simply evaluates a function for each item in the collection.
 
 To iterate over a collection, we first need to create a collection. So here's an array of several numbers
 
@@ -57,28 +53,6 @@ z = [6, 4, 0.5, 10, 7].collect{
 	item.squared;
 };
 )
-
-And for anyone who has a sweet tooth for syntactic sugar, you can even use this condensed underscore notation.
-
-z = [6, 4, 0.5, 10, 7].collect(_.squared);
-
-One more thing before we move on to audio, I'll point out that positive integers respond to "do" by iterating from 0 up to and not including their value. So something like
-
-5.do;
-
-is effectively the same as the array 0 through 4 .do
-
-[0,1,2,3,4].do
-
-and just to prove this, I'll iterate over the array, and post each item,
-
-[0,1,2,3,4].do{arg item; item.postln};
-
-and then execute 5.do and post each item:
-
-5.do{arg item; item.postln};
-
-We're using different receivers, but the results of these two functions are indistinguishable.
 
 s.boot;
 

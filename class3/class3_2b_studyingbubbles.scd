@@ -1,4 +1,4 @@
-// Here is the very first example from the first release of SuperCollider 2
+=// Here is the very first example from the first release of SuperCollider 2
 
 (// analog bubbles
 {	var f;  // without a declaration, this would use the interpreter variable f
@@ -58,7 +58,8 @@
 
 	a = SinOsc.ar(f);
 	a = a * 0.04;
-	CombN.ar(a, 0.2, 0.2, 4) 	// the arguments are: audio, max_delay, delay, echo_duration
+	CombN.ar(a, 0.2, 0.2, 4);
+	// the arguments are: audio, max_delay, delay, echo_duration
 }.play
 )
 
@@ -67,10 +68,10 @@
 var k, f, a;
 	k = LFSaw.kr(0.4) * 24 + [81, 81];	// this now creates a two element array
 	f = k.midicps; 						// the result is also an array
-	a = SinOsc.ar(f);					// the resultant array of SinOsc's is a STEREO SIGNAL
+	a = SinOsc.ar(f);			// the resultant array of SinOsc's is STEREO SIGNAL
 	a = a * 0.04;						// attenuate the stereo pair
 	CombN.ar(a, 0.2, 0.2,4) 			// while this creates two separate delays
-										// we hear it as a mono signal out of two speakers
+									// we hear it as a mono signal out of two speakers
 }.play
 )
 
@@ -101,4 +102,35 @@ var k, f, a;
 	CombN.ar(a, 0.2, 0.2, 4)
 }.play
 )
+
+
+//as a Synthdef
+
+(
+SynthDef.new(\bubbles,
+{
+	arg modrange=8, bubrange=7.24, big=0.4;
+	var k, f, a, mod1, mod2, sig;
+	mod1 = LFSaw.kr(modrange);
+	mod1 = mod1.range( 78, 84);
+
+	mod2 = LFSaw.kr(bubrange);					// define the second modulator
+	mod2 = mod2.range( 78, 84);
+
+	k = LFSaw.kr(big) * 24 + [mod1, mod2];	// use the second modulator
+	f = k.midicps;
+	a = SinOsc.ar(f) * 0.04;
+	sig = CombN.ar(a, 0.2, 0.2, 4);
+	Out.ar([0,1], sig); //the critical line of code!
+}).add
+)
+
+x = Synth.new(\bubbles, [\big, 0.4, \bubrange, 20, \modrange, 3]);
+x.free;
+x = Synth.new(\bubbles, [\big, 3.4, \bubrange, 50, \modrange, 6]);
+
+x.free;
+x.set(\bubrange, 20);
+x.set(\big, 3);
+x.set([\big, 0.4, \bubrange, 20, \modrange, 3]);
 

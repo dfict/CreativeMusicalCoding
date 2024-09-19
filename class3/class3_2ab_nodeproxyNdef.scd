@@ -6,16 +6,16 @@ updates its content automatically as you interact with the NodeProxy
 (
 // create a NodeProxy and a gui
 ~np = NodeProxy.audio(s, 2);
-~gui = ~np.gui;
-)
-
 (
 // now let's add a synthesis function
 ~np[0] = {|freq= 400, amp= 0.1, pan = 0, beats = 2 |
 	var audio = SinOsc.ar(freq) * LFTri.kr(beats);
 	audio = Pan2.ar(audio, pan, amp)
 };
+~gui = ~np.gui;
 )
+)
+~np.stop;
 // Notice that the individual controls have a reasonable range of values
 
 // now let's add the same synthesis function,
@@ -27,7 +27,7 @@ updates its content automatically as you interact with the NodeProxy
 	audio = Pan2.ar(audio, pan1, amp1)
 };
 )
-~np.gui
+~np.gui;
 
 Notice that the individual controls do not have a reasonable ranges!
 

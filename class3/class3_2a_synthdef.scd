@@ -62,7 +62,7 @@ x.free; // to free the synth
 x = Synth.new(\sineTest, [\noiseHz, 32])
 
 //the set message can be used to update control arguments while the Synth is active.
-x.set(\noiseHz, 1)
+x.set(\noiseHz, 15)
 x.free;
 
 
@@ -80,14 +80,15 @@ SynthDef.new(\dusty, {
 	freq2 = LFNoise1.ar(0.3).range(100, 3000);
 	sig1 = RLPF.ar(in1, freq1, 0.02);
 	sig2 = RLPF.ar(in2, freq2, 0.02);
-	sig1 = FreeVerb.ar(sig1, 0.7, 0.8, 0.25);
-	sig2 = FreeVerb.ar(sig2, 0.7, 0.8, 0.25);
+//	sig1 = FreeVerb.ar(sig1, 0.7, 0.8, 0.25);
+//	sig2 = FreeVerb.ar(sig2, 0.7, 0.8, 0.25);
 	Out.ar(0, sig1);
 	Out.ar(1, sig2);
 }).add;
 )
 
 x = Synth.new(\dusty);
+x.free;
 
 (
 x.set(\rate1, 1);

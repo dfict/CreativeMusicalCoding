@@ -47,6 +47,7 @@ a.source =
 	LFTri.ar(200+freqMod, 0, 1.0);};
 ) //simple FM w offset
 
+//try LFSsaw, LFPulse, LFTri, etc
 
 (
 a.source =
@@ -70,6 +71,10 @@ a.source =
 	RLPF.ar(sig, mod, 0.1);};
 )
 // input to filter
+
+a.source = ();
+
+
 
 
 a.source = { SinOsc.ar([350, 351.3], 0, 0.2) };
