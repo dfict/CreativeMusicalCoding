@@ -40,8 +40,7 @@ f = { |  r0 = 0.4, range = 24, r1 = 8, r2 = 7.23, lok= 78, hik = 84  , delay = 0
 
 // f.play;			// note: the 'play' method treats the function as a synthesis function...so don't use it...
 
-//
-instead define controls
+//instead define controls
 
 (
 // here is the tedious process of defining ControlSpecs for each control...
