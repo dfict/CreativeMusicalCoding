@@ -13,7 +13,7 @@ e = (sustain: 4, freq: [69, 73].midicps).play
 f = (sustain: 4, freq: {440 * [1/1, 5/4]}).play
 //major triad in just
 
-{SinOsc.ar(440)}.play;
+{SinOsc.ar(100)}.play;
 
 
 { SinOsc.ar([60, 63].midicps, 0, 0.5) }.play;

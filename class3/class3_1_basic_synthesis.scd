@@ -4,25 +4,21 @@ s.makeWindow;
 
 
 
-(a = NodeProxy.new.play; // play to hardware output.
+(
+a = NodeProxy.new.play; // play to hardware output.
 a.fadeTime = 1; // fadeTime specifies crossfade
 // set the source
-a.source = { };) // start your engines, A is empty!
+a.source = { };
+) // start your engines, A is empty!
 
 a.source = { }; // start your engines, A is empty!
 
-(a.source =
-{ var ampMod, mod, kY, kX;
-	kY = MouseY.kr(0, 0.1, 0);
-	kX = MouseX.kr(0.1, 200, 0);
-	mod = kX;
-	ampMod = SinOsc.ar(kX*[1, 1.5], 0, 0.5);
-	LFSaw.ar(220*[mod*1.1, mod*1], 0, ampMod*[1, 1.5]);};
-) // AM modulation 2 ch
+
 
 (a.source =
 { var ampMod, kY, kX;
 	kX = MouseX.kr(0.1, 200, 0);
+	kY = MouseY.kr(0.1, 1.0, 0);
 	ampMod = SinOsc.ar(kX, 0, 1.0);
 	LFTri.ar(220, 0, ampMod);};
 ) //simple AM
@@ -33,7 +29,7 @@ a.source =
 { var ampMod, mod, kY, kX;
 	kY = MouseY.kr(0, 20, 0);
 	kX = MouseX.kr(0.1, 200, 0);
-	ampMod = SinOsc.ar(kX, 0, kY);
+	ampMod = LFTri.ar(kX, 0, kY);
 	LFTri.ar(220, 0, ampMod);};
 ) //simple AM w offset
 
@@ -41,13 +37,15 @@ a.source =
 (
 a.source =
 { var ampMod, freqMod, kY, kX;
-	kY = MouseY.kr(0, 100, 0);
-	kX = MouseX.kr(0.1, 100, 0);
+	kY = MouseY.kr(0, 2000, 0);
+	kX = MouseX.kr(0.1, 4000, 0);
 	freqMod = SinOsc.ar(kX, 0, kY);
 	LFTri.ar(200+freqMod, 0, 1.0);};
 ) //simple FM w offset
 
 //try LFSsaw, LFPulse, LFTri, etc
+
+a.source ={};
 
 (
 a.source =

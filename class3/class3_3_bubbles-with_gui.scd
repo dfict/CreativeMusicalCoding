@@ -63,7 +63,7 @@ Spec.add(\decay,[0.01, 10, 3]);
 )
 
 )
-
+//a change
 ///another example!
 
 Spec.add(\period, ControlSpec( 0.01, 100, 'exp',0, 30) );

@@ -72,12 +72,12 @@ x.free;
 //lets make it a synthdef we can control
 (
 SynthDef.new(\dusty, {
-	arg rate1=10, rate2=14;
+	arg rate1=10, rate2=14, range=3000;
 	var amp1, amp2, in1, in2, sig1, sig2, freq1, freq2;
 	in1 = Dust.ar(rate1);
 	in2 = Dust.ar(rate2);
-	freq1 = LFNoise1.ar(0.2).range(100, 3000);
-	freq2 = LFNoise1.ar(0.3).range(100, 3000);
+	freq1 = LFNoise1.ar(0.2).range(100, range);
+	freq2 = LFNoise1.ar(0.3).range(100, range);
 	sig1 = RLPF.ar(in1, freq1, 0.02);
 	sig2 = RLPF.ar(in2, freq2, 0.02);
 //	sig1 = FreeVerb.ar(sig1, 0.7, 0.8, 0.25);
@@ -91,8 +91,8 @@ x = Synth.new(\dusty);
 x.free;
 
 (
-x.set(\rate1, 1);
-x.set(\rate2, 2,);
+
+x.set(\range, 400);
 )
 
 
@@ -128,6 +128,8 @@ x.set(\width, 0.05);
 x.set(\width, 0.25);
 
 the fundamental frequency
+
+x.free;
 
 x.set(\fund, 50);
 x.set(\fund, 60);
