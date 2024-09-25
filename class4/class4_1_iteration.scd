@@ -14,12 +14,26 @@ More importantly, you might have noticed that the same result would have been pr
 
 In many cases, you'll want to incorporate somehow the collection's items into the function. For example, if you have a list of 200 file names, you might want to change the extension on all of these files names, and this is where the real strength of iteration comes into play. To pass items into a function, we declare an input argument, whose value will range over the contents of the collection. In this particular function, we're going to square each item and post the result.
 
+
 (
 [6, 4, 0.5, 10, 7].do{
 	arg item;
 	item.squared.postln;
 }
 )
+
+
+
+10.do { |i| // pipes are way to define an argument
+ i.postln;   // looks more like a classic for loop
+}
+
+// Equivalent using arg syntax
+4.do {
+    arg i;
+   i.cubed.postln; // function body
+}
+
 
 In some cases, you might also want to keep track of how many times the function has been evaluated, or in other words, how many iterations have occured. This is done by adding a second argument to the function, like this. Now, on each iteration, I'll instead post an array containing the current number of iterations, and the current item, squared.
 
@@ -80,6 +94,8 @@ SynthDef.new(\iter, {
 }).add;
 )
 
+it does this ten times. there is no argument that's iterated, it just repeats the thing and dumps it ten times.
+
 Before we dive into this example, I just want to point out what happens if we don't initialize sum. Without a starting value, sum is equal to 'nil' which is a special value given to variables that don't have a value. SuperCollider doesn't know how to add things to nil (and quite frankly it doesn't make sense to me either), so it runs into trouble on this line. Sure enough, SuperCollider tells us that it couldn't make heads or tails of the plus operator. So that's why we need to initialze our output signal.
 
 x = Synth.new(\iter);
@@ -110,13 +126,15 @@ SynthDef.new(\iter, {
 	var temp, sum;
 	sum = 0;
 	10.do{
-		temp = VarSaw.ar(40 * {Rand(0.99,1.02)}!2, {Rand(0.0,1.0)}!2, {ExpRand(0.005, 0.05)}!2);
+		temp = VarSaw.ar(40 * {rrand(1, 20).round}!2, {Rand(0.0,1.0)}!2, {ExpRand(0.005, 0.05)}!2);
 		sum = sum + temp;
 	};
 	sum = sum * 0.05;
 	Out.ar(0, sum);
 }).add;
 )
+//cool use of rrand with round. makes random numbers and then rounds them
+
 
 x = Synth.new(\iter);
 x.free;
@@ -132,7 +150,7 @@ SynthDef.new(\iter, {
 	);
 	sum = 0;
 	10.do{
-		temp = VarSaw.ar(40 * {Rand(0.99,1.02)}!2, {Rand(0.0,1.0)}!2, {ExpRand(0.005, 0.05)}!2);
+		temp = VarSaw.ar(40 * {rrand(1, 20).round}!2, {Rand(0.0,1.0)}!2, {ExpRand(0.005, 0.05)}!2);
 		sum = sum + temp;
 	};
 	sum = sum * 0.05 * env;

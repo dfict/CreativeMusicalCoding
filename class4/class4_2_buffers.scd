@@ -1,10 +1,3 @@
-Hey everyone, welcome to tutorial number 8. In this video I'll discuss the Buffer object
-
-[open buffer help file]
-
-and demonstrate some of its common uses. So far, the audio examples in this series have focused on generated sound, like sine waves, sawtooth waves, white noise, and so forth. But we haven't really dealt with recorded sound yet, and for this we use Buffers. Generally speaking, a buffer corresponds to a location in your computer's memory that's used to hold an ordered sequence of values. In the context of digital sound, buffers are usually used for holding, recording, and playing back sampled audio. So let's jump right in.
-
-Buffers are server-side objects, so we'll need to boot the audio server before we can do anything useful.
 
 s.boot;
 
@@ -48,7 +41,7 @@ Now this buffer's completely gone, so if we try to play it
 
 Or read a file into it
 
-~b0.read("/Users/eli/Desktop/sounds/car1.aiff");
+~b0.read("/Users/danielfishkin/gitprojects/CreativeMusicalCoding/class4/daxos/daxCHORD.wav");
 
 We get an error message.
 
@@ -64,7 +57,8 @@ Instead of manually typing the path, you can drag and drop a soundfile into the 
 
 "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/highlights/constantino-vendingmachinedrone-FFT.aiff"
 
-~b0 = Buffer.read(s, "/Users/eli/Desktop/sounds/car1.aiff");
+
+~b0 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/class4/daxos/dax_harmonic_SHOUT.wav");
 ~b0.play;
 
 And while I'm at it, I'll also load car2, car3, and bike into their own buffers

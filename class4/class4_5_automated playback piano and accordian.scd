@@ -10,6 +10,7 @@ So, we can use that method to play a random sound file
 
 ~np = NodeProxy.audio(s, 2).play;
 ~np.play;
+~np.clear;
 
 (~np[0] = {
 	var buf = ~buffers.choose;

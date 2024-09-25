@@ -33,6 +33,15 @@ b.source = {
 // To clear the proxy and remove it from the server:
  b.clear(5); // 5 second fadeout before clearing
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
 ///you could also do it this way for slightly different parameters using an environmental variable instead of global variable:
 
 (

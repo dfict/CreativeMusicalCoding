@@ -2,13 +2,12 @@
 s.options.memSize = 8192 * 4;
 s.quit;
 s.waitForBoot {
-	n= NodeProxy.audio(s, 2);
+	n= NodeProxy.audio(s,2);
 	e = NodeProxy.audio(s,2);
-	e.play	//  e will be the NP that we actually hear
+	e.play;	//  e will be the NP that we actually hear
 	e[0] = { n.ar };								// and we will hear whatever is in "n"
-
 };
-);
+)
 
 (
 ~sinPulse = { | freq = 200, rate1 = 1, rate2 = 3, modfreq = 900, swellRate1 = 0.1, swellRate2 = 0.09 , amp = 0.1, pw = 0.1|
