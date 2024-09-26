@@ -6,8 +6,8 @@ SynthDef(\randomSine, {
     Out.ar(0, Pan2.ar(sig, pan, 0.5));
 }).add;
 
-~numOscs = 20;
-~freqRange = [20, 4000]; // Minimum and maximum frequency in Hz
+~numOscs = 50;
+~freqRange = [20, 8000]; // Minimum and maximum frequency in Hz
 
 ~sines = Array.fill(~numOscs, {
     var freq = exprand(~freqRange[0], ~freqRange[1]);
@@ -20,7 +20,7 @@ SynthDef(\randomSine, {
 });
 )
 
-
+~sines.do(_.scope);
 // To stop all synths:
  ~sines.do(_.free);
 

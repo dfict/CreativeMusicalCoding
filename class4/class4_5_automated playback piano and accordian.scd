@@ -24,7 +24,7 @@ So, we can use that method to play a random sound file
 
 (~np[0] = {
 	var buf = ~buffers.choose;
-	var rate = (0..12).choose.midiratio;
+	var rate = (0..12).choose.midiratio;// It randomly selects an integer between 0 and 12.It then converts this integer to a frequency ratio as if it were a MIDI note number difference.
 	var amp = 0.1;
 			Pan2.ar(
 				PlayBuf.ar(buf.numChannels,buf.bufnum, rate: rate,  doneAction: 2) * amp,
@@ -35,8 +35,8 @@ So, we can use that method to play a random sound file
 
 
 (~np[0] = {
-	var buf = ~buffers.choose;
-	var rate = (0..12).choose.midiratio;
+	var buf = ~buffers.at(1);
+	var rate = (0..2).choose.midiratio;
 	var amp = rrand(-40, 0).dbamp;
 			Pan2.ar(
 				PlayBuf.ar(buf.numChannels,buf.bufnum, rate: rate,  doneAction: 2) * amp,
@@ -66,6 +66,11 @@ Here is a simple example:
 	"3 mississippi".postln; 1 .wait;
 	"4 mississippi".postln; 1 .wait;
 })
+
+
+
+// Test the function
+~np[0].value(5).play;
 
 ~np[1] =  Task({ var buf, rate, amp;
 	 buf =  ~buffers.choose;

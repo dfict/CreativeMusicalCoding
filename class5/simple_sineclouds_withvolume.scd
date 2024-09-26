@@ -7,9 +7,10 @@ SynthDef(\randomSineShiver, {
     Out.ar(0, Pan2.ar(sig, pan));
 }).add;
 
-~numOscs = 20;
-~freqRange = [20, 16000]; // Minimum and maximum frequency in Hz
-~pulsRange = [0.4, 10.0]; // Adjusted minimum to allow for slower modulations
+~numOscs = 11;
+~freqRange = [60, 8000]; // Minimum and maximum frequency in Hz
+~pulsRange = [0.1, 2.0]; // Adjusted minimum to allow for slower modulations
+~masterAmp = 0.5;  // Added master amplitude control
 
 ~pulsingSines = Array.fill(~numOscs, {
     var freq = exprand(~freqRange[0], ~freqRange[1]);
@@ -17,19 +18,12 @@ SynthDef(\randomSineShiver, {
     var pan = rrand(-1.0, 1.0);
     Synth(\randomSineShiver, [
         \freq, freq,
-		\rhy, rhy,
-        \amp, 0.5 / ~numOscs,  // Adjusted amplitude calculation
+        \rhy, rhy,
+        \amp, ~masterAmp / ~numOscs,  // Adjusted amplitude calculation
         \pan, pan
     ]);
 });
 )
 
-
 // To stop all synths:
- ~sines.do(_.free);
-
-{v = SinOsc.ar(440, 1.0, LFTri.ar(1, 0, 0.25, 0.75))}.scope;
-
-
-
-
+~pulsingSines.do(_.free);

@@ -39,7 +39,7 @@ as in ~buffers[0] or ~buffers[1], etc
 (
 ~np[1] =  { 						// normal rate playback
 	var audio, rate;
-	rate = 1;
+	rate = MouseX.kr(0.25, 5, 0);
 	audio = PlayBuf.ar(1, bufnum: ~buffers[1], rate: rate, loop: 1);
 	Pan2.ar(audio, LFTri.kr(rate) );
 };
@@ -61,6 +61,20 @@ as in ~buffers[0] or ~buffers[1], etc
 	Pan2.ar(audio, LFTri.kr(rate) );
 };
 )
+
+(
+~np[1] =  { 					// four rates
+	var audio, rate, m1, m2, m3, m4;
+	m1 = MouseX.kr(0.25, 5, 0);
+	m2 = MouseX.kr(0.15, 4, 0);
+	m3 = MouseX.kr(8, 0.1, 0);
+	m4 = MouseX.kr(0.1, 3, 0);
+	rate = 2/[m1,m2,m3,m4];
+	audio = PlayBuf.ar(1, bufnum: ~buffers[1], rate: rate, loop: 1);
+	Pan2.ar(audio, LFTri.kr(rate) );
+};
+)
+
 (
 // STEP 4: add ring modulation
 ~np[1] =  { 						// now with ring modulation

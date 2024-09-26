@@ -17,7 +17,7 @@ Ok, so let's stop here and run this line. In the post window, this is what you c
 
 As a convenience, we can use the play method to hear the contents of a buffer.
 
-~b0.play
+~b0.play;
 
 But with this approach, all you can really do is verify that your sound file has been loaded successfully.
 
@@ -33,7 +33,7 @@ We've cleared b0, but we haven't removed the allocated buffer from the server, s
 
 If you want to remove a buffer from the server entirely, we use "free", just like with Synths and Groups.
 
-~b0.free;
+~b2.free;
 
 Now this buffer's completely gone, so if we try to play it
 
@@ -57,14 +57,13 @@ Instead of manually typing the path, you can drag and drop a soundfile into the 
 
 "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/highlights/constantino-vendingmachinedrone-FFT.aiff"
 
+//LOAD UP SOME SOUNNDS
 
 ~b0 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/class4/daxos/dax_harmonic_SHOUT.wav");
 ~b0.play;
 
-And while I'm at it, I'll also load car2, car3, and bike into their own buffers
-
-~b1 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/highlights/constantino-vendingmachinedrone-FFT.aiff");
-~b2 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/highlights/Drums week two.wav");
+~b1 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/highlights/Short&Sweet.wav");
+~b2 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/highlights/Mixing1.wav");
 ~b3 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/highlights/SW WK2 crickets from tara's window.wav" );
 
 ~b1.play;
@@ -74,22 +73,26 @@ And while I'm at it, I'll also load car2, car3, and bike into their own buffers
 
 Ok, cool, so now that we've got a few sound files loaded, let's talk about some fundamental attributes of buffers. First, every buffer has a certain number of frames, and this number corresponds to the length of the buffer. If you want to know the number of frames in a buffer, we just use the numFrames method.
 
+//FRAMES
 ~b0.numFrames;
 
 We can see that buffer b0 has 132313 frames. Frames are similar to samples, but not quite the same. To illustrate the difference, I'll segue into another fundamental attribute, which is channels. Like frames, every buffer has a certain number of channels.
 
+//CHANNELS
 ~b0.numChannels;
 
 Using the numChannels method, we can see that b0 has 2 channels. This is because the original audio file is a stereo file, and therefore has two channels. The read message detects this and automatically allocates a buffer with the same number of channels. So here's the difference between samples and frames. In the case of a mono buffer, or in other words, a one-channel buffer, the number of samples is the same as the number of frames. With a stereo buffer, there are two channels, so there are actually twice as many samples as there are frames. Buffers can have any number of channels, actually, not just 1 or 2, so the equation to remember is
 
 Ok, moving on to more fundamental attributes, if you ever need the length of a buffer in seconds, you can use the duration method, like this
 
+//DURATION
 ~b2.duration;
 
 so that's pretty straightforward.
 
 One very common and important attribute is Buffer Numbers. Whenever a buffer is loaded onto the server, using read, readChannel, or any other method of buffer allocation, SuperCollider assigns to it a buffer number, or bufnum, as it's more commonly called. Bufnums are integers starting with zero that are automatically assigned in ascending order when a Buffer is created. If you want to get the bufnum for a particular buffer, we use the method bufnum.
 
+//BUFFER NUMBERS
 ~b0.bufnum;
 ~b1.bufnum;
 ~b2.bufnum;
@@ -99,17 +102,19 @@ We can see that the bufnums have been assigned according to the order in which w
 
 The last attribute I'll cover is the buffer sample rate. All sound files are recorded and exported at a certain sample rate, and buffers reflect these sample rates.
 
+//SAMPLE RATE
 ~b0.sampleRate;
+s.sampleRate;
 
 the audio file in buffer b0, and in fact all the other sounds in this folder, have been exported at 44100 samples per second
-
-s.sampleRate;
 
 and the server sample rate is the same, so I'm in good shape. It is possible to have buffer sample rates that are different than the server sample rate, so long as you're aware of the difference, and take the correct measures, so that your sounds aren't unintentionally re-sampled. We'll deal with this a little bit later.
 
 In summary, you can use the query message as a quick and convenient way to see many of these fundamental attributes all at once.
 
+//SUMMARY OF ALL INFO:
 ~b0.query;
+
 
 So that's about it for buffer fundamentals. There are two things I'd like to talk about before we get into buffer UGens: 1 is how to read only part of a soundfile into a buffer, and 2 is how to read many soundfiles onto the server at once.
 
@@ -119,7 +124,7 @@ To read part of a soundfile into a buffer, we can use the 3rd and 4th arguments 
 
 So, suppose I only want to read the first half second of this sound file. I'll specify 0 as the starting frame, and for the number of frames, I can just specify half the server's sample rate
 
-~b3_part0 = Buffer.read(s, "/Users/eli/Desktop/sounds/bike.aiff", 0, s.sampleRate/2);
+~b3_part0 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/class4/daxos/daxchordCLUSTER copy.wav", 0, s.sampleRate/2);
 ~b3_part0.play;
 
 Alternatively, let's say I want to read just the tail end of this soundfile. First I'll check the number of frames in the buffer containing the full sound file,
@@ -128,7 +133,7 @@ Alternatively, let's say I want to read just the tail end of this soundfile. Fir
 
 which is 264599. I'll pick an arbitrary start frame somewhere close to the end, and use simple subtraction to determine the number of frames between this frame and the end. However, because the index of the first frame is zero, not one, this means the index of the last frame is actually the total number of frames minus one, so the responsible thing to do here is to subtract an extra frame. Technically, this might not be necessary - There's a chance SuperCollider might anticipate this error and handle it for us, but even so, it feels like a safe thing to do.
 
-~b3_part1 = Buffer.read(s, "/Users/eli/Desktop/sounds/bike.aiff", 223555, ~b3.numFrames-223556);
+~b3_part1 = Buffer.read(s, "/Users/danielfishkin/gitprojects/CreativeMusicalCoding/class4/daxos/daxchordCLUSTER copy.wav", 723555, ~b3.numFrames-723555);
 ~b3_part1.play
 
 So let's talk about how to load many sound files all at once, instead of having to type them one at a time. There are, in fact, lots of different ways to do this, and most of them involve some kind of iteration. One fairly simple option is to store your sound files in an Array, so that each buffer is addressable by a unique index. For this example I'll use a folder containing a chromatic scale of desk bells.
@@ -137,7 +142,7 @@ And I'll start by creating an empty Array, which will be used to hold our buffer
 
 ~daxo = Array.new;
 
-and I'm also going to use an instance of a class called PathName that acts as a reference to the folder of bell sounds.
+and I'm also going to use an instance of a class called PathName that acts as a reference to the folder of daxo sounds.
 
 ~folder = PathName.new("/Users/danielfishkin/gitprojects/CreativeMusicalCoding/class4/daxos/");
 
@@ -150,21 +155,21 @@ Now all I have to do is iterate over the folder entries using do, similar to wha
 (
 ~folder.entries.do({
 	arg path;
-	~daxo = ~daxo.add(Buffer.read(s, path.fullPath));
+	~daxos = ~daxos.add(Buffer.read(s, path.fullPath));
 });
 )
 
 And that's really all there is to it. We can see that ~bells is now filled with buffers, and we can refer to inidividual buffers using the 'at' method, like this
 
-~daxo;
-~daxo.at(0).play;
-~daxo.at(3).play;
-~daxo.at(7).play;
-~daxo.at(12).play;
+~daxos;
+~daxos.at(0).play;
+~daxos.at(3).play;
+~daxos.at(7).play;
+~daxos.at(12).play;
 
 Even quicker is the syntactical shortcut using square brackets:
 
-~daxo[15].play;
+~daxos[15].play;
 
 Keep in mind that there is a limit on the number of buffers you can load onto the server, which you can get by evaluating
 
@@ -180,6 +185,8 @@ So that about covers buffer fundamentals. Let's now turn our attention to manipu
 
 I'll deal with PlayBuf first, and I'll create a SynthDef to demonstrate. At minimum, PlayBuf needs to know two things about the buffer it's playing: the number of channels, and the bufnum. Since I'm only going to be dealing with stereo sound, I'll specify two channels. For the bufnum, it's possible to provide the bufnum explicitly, like this,
 
+
+// bad code
 (
 SynthDef.new(\playbuf_test, {
 	arg amp=1, out=0;
@@ -194,6 +201,24 @@ But of course, this is a poor choice, because it means this SynthDef will only b
 
 (
 SynthDef.new(\playbuf_test, {
+	arg amp=1, out=0, buf; // magic argument means you can point to different wav files
+	var sig;
+	sig = PlayBuf.ar(2, buf);
+	sig = sig * amp;
+	Out.ar(out, sig);
+}).add;
+)
+
+Synth.new(\playbuf_test, [\buf, ~b3.bufnum]);
+
+Now we can use the same SynthDef to play different buffers:
+
+Synth.new(\playbuf_test, [\buf, ~b1.bufnum]);
+Synth.new(\playbuf_test, [\buf, ~b2.bufnum]);
+
+
+(
+SynthDef.new(\daxobuffer, {
 	arg amp=1, out=0, buf;
 	var sig;
 	sig = PlayBuf.ar(2, buf);
@@ -202,12 +227,7 @@ SynthDef.new(\playbuf_test, {
 }).add;
 )
 
-Synth.new(\playbuf_test, [\buf, ~b0.bufnum]);
-
-Now we can use the same SynthDef to play different buffers:
-
-Synth.new(\playbuf_test, [\buf, ~b1.bufnum]);
-Synth.new(\playbuf_test, [\buf, ~b2.bufnum]);
+Synth.new(\daxobuffer, [\buf, ~daxos.at(3)]);
 
 On the other hand, it's NOT possible to declare an argument for the number of channels, as we can see from this error message.
 
@@ -284,6 +304,7 @@ and 0.5 would be twice as slow.
 
 Synth.new(\playbuf_test, [\buf, ~b0.bufnum, \rate, 0.5]);
 
+//need to use BufRateScale.kr(buf) to retrieve the sample rate
 
 (
 SynthDef.new(\playbuf_test, {
@@ -368,10 +389,10 @@ so there's the equal tempered ratio for a fifth, and so on.
 
 So with midiratio, it becomes very easy to transpose your sounds by semitones.
 
-Synth.new(\playbuf_test, [\buf, ~daxo[0].bufnum, \rate, -7.midiratio]);
-Synth.new(\playbuf_test, [\buf, ~daxo[0].bufnum, \rate, -10.midiratio]);
-Synth.new(\playbuf_test, [\buf, ~daxo[0].bufnum, \rate, -13.midiratio]);
-Synth.new(\playbuf_test, [\buf, ~daxo[0].bufnum, \rate, -15.midiratio]);
+Synth.new(\playbuf_test, [\buf, ~daxo[3].bufnum, \rate, -7.midiratio]);
+Synth.new(\playbuf_test, [\buf, ~daxo[3].bufnum, \rate, -10.midiratio]);
+Synth.new(\playbuf_test, [\buf, ~daxo[3].bufnum, \rate, -13.midiratio]);
+Synth.new(\playbuf_test, [\buf, ~daxo[3].bufnum, \rate, -15.midiratio]);
 
 So that's essentially how PlayBuf works. Here's a quick example that's a little more interesting and a little less clinical. I'll first create a Group, and put three Synths into it, each with a different buffer and different playback rate, and I'll loop them.
 
