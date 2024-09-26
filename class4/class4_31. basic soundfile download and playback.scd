@@ -47,7 +47,7 @@ as in ~buffers[0] or ~buffers[1], etc
 (
 ~np[1] =  { 					// quarter speed - two octaves lower and  4x longer
 	var audio, rate;
-	rate = 1/4;
+	rate = 1/2;
 	audio = PlayBuf.ar(1, bufnum: ~buffers[1], rate: rate, loop: 1);
 	Pan2.ar(audio, LFTri.kr(rate) );
 };
@@ -56,11 +56,14 @@ as in ~buffers[0] or ~buffers[1], etc
 (
 ~np[1] =  { 					// four rates
 	var audio, rate;
-	rate = 2/[3,6,12, 1];
+	rate = 2/[1,6,12, 2];
 	audio = PlayBuf.ar(1, bufnum: ~buffers[1], rate: rate, loop: 1);
 	Pan2.ar(audio, LFTri.kr(rate) );
 };
 )
+
+~np[1] = 0;
+
 
 (
 ~np[1] =  { 					// four rates
@@ -79,9 +82,9 @@ as in ~buffers[0] or ~buffers[1], etc
 // STEP 4: add ring modulation
 ~np[1] =  { 						// now with ring modulation
 	var audio, rate;
-	rate = 1;
+	rate = 1/3;
 	audio = PlayBuf.ar(1, bufnum: ~buffers[1], rate: rate, loop: 1);
-	audio = audio * SinOsc.ar(400);
+	audio = audio * SinOsc.ar(3);
 	Pan2.ar(audio, LFTri.kr(rate) );
 };
 )
@@ -99,7 +102,7 @@ as in ~buffers[0] or ~buffers[1], etc
 	var audio, rate;
 	rate = 2/[3,6,12, 1];
 	audio = PlayBuf.ar(1, bufnum: ~buffers[1], rate: rate, loop: 1);
-	audio = audio * SinOsc.ar(400);		// ring modulation
+	audio = audio * SinOsc.ar(MouseX.kr(20, 300, 0));		// ring modulation
 	Pan2.ar(audio, LFTri.kr(rate) );
 };
 )

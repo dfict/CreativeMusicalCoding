@@ -32,9 +32,22 @@
 
 ~b0.query;
 
-~daxos = Array.new;
-~folder = Pathname.new("/Users/danielfishkin/gitprojects/
-CreativeMusicalCoding/class4/daxos/")
+
+// //
+// So let's talk about how to load many sound files all at once, instead of having to type them one at a time. There are, in fact, lots of different ways to do this, and most of them involve some kind of iteration. One fairly simple option is to store your sound files in an Array, so that each buffer is addressable by a unique index. For this example I'll use a folder containing a chromatic scale of desk bells.
+//
+// //And I'll start by creating an empty Array, which will be used to hold our buffers:
+
+~daxo = Array.new;
+
+and I'm also going to use an instance of a class called PathName that acts as a reference to the folder of daxo sounds.
+
+~folder = PathName.new("/Users/danielfishkin/gitprojects/CreativeMusicalCoding/class4/daxos/");
+
+If you send the message "entries" to a PathName, it will return an Array of PathNames representing the soundfiles themselves.
+
+~folder.entries;
+
 
 (
 ~folder.entries.do({
@@ -43,10 +56,11 @@ CreativeMusicalCoding/class4/daxos/")
 });
 )
 
+And that's really all there is to it. We can see that ~bells is now filled with buffers, and we can refer to inidividual buffers using the 'at' method, like this
 
 ~daxos;
-~daxos.at(21).play;
-
-~daxos[20].play;
-
+~daxos.at(0).play;
+~daxos.at(3).play;
+~daxos.at(7).play;
+~daxos.at(12).play;
 
