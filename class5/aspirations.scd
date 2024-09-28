@@ -34,7 +34,7 @@ Pan2.ar(
 (
 ~modSine = NodeProxy.audio(s, 2).play;
 
-~modSine[0] = { |freqMin=80, freqMax=108, modDepthLow=0.1, modDepthHigh=0.1, numInstances=1|
+~modSine[0] = { |freqMin=80, freqMax=108, numInstances=1|
     var maxInstances = 20;
     var sig = Array.fill(maxInstances, { |i|
         var trigger = Changed.kr(numInstances) + Impulse.kr(0);
@@ -47,9 +47,8 @@ Pan2.ar(
             SinOsc.ar(
                 baseFreq,
                 0,
-                SinOsc.kr(modLow * LFNoise1.kr(0.1).range(0.7, 1.3), 0, modDepthLow).max(0)
-                * SinOsc.kr(modHigh * LFNoise1.kr(0.1).range(0.7, 1.3), 0, modDepthHigh).abs
-            ),
+                SinOsc.kr(modLow * LFNoise1.kr(0.1).range(0.7, 1.3), 0).max(0)
+                * SinOsc.kr(modHigh * LFNoise1.kr(0.1).range(0.7, 1.3), 0).abs),
             pan
         ) * (i < numInstances).lag(0.1);  // Crossfade instances in/out
     });
@@ -57,13 +56,12 @@ Pan2.ar(
     Mix(sig) * (1 / (numInstances.sqrt));  // Normalize amplitude
 };
 
-
 ~modSine.gui;
 )
 
 
 // Change parameters
-~modSine.set(\freqMin, 60, \freqMax, 90, \modDepthLow, 0.2, \modDepthHigh, 0.15, \numInstances, 5);
+~modSine.set(\freqMin, 60, \freqMax, 109, \numInstances, 9);
 
 // Regenerate all instances with new random values
 ~modSine.set(\numInstances, ~modSine.get(\numInstances));
