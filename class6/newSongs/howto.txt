@@ -1,0 +1,39 @@
+INSTRUCTIONS:
+
+Open Terminal and run the setup command (change the path to the current directory). Then run the corresponding command to program a noise toy.
+
+
+SETUP:
+
+Switch to current directory: in Terminal, type "cd " (with a space after "cd") and then drag the current folder into the Terminal window to autocomplete the path to the directory. Then press return/enter.
+
+cd PATH_TO_THIS_DIRECTORY
+
+
+
+CODE:
+
+In Terminal, run the corresponding "make" command specified below. Copy/paste the line into Terminal, then press return/enter.
+
+MANATEES (BLUE):
+make project=manatee_toy
+
+BUTTERFLY (YELLOW):
+make project=butterfly_v4
+
+ORACLE (GREY):
+make project=stereo85plus_toy
+
+BROCCOLI:
+make project=broccoli
+
+ORANGE/SUNRISE:
+make project=i5_toy_v7
+
+order of pins:
+LtoR
+1) reset
+2) MOSI
+3) MISO
+4) SCK
+5) GND
