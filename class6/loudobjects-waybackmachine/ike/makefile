@@ -78,14 +78,23 @@ PROGRAMMER_MCU=t85
 
 # Name of our project
 # (use a single word, e.g. 'myproject')
-PROJECTNAME=mynoisetoyproject
+#PROJECTNAME=birdlane
 
 # Source files
 # List C/C++/Assembly source files:
 # (list all files to compile, e.g. 'a.c b.cpp as.S'):
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
-PRJSRC=mynoisetoyproject.c
+#PRJSRC=birdlane.c
+
+# Automatically detect the project name and source file
+PRJSRC := $(wildcard *.c)
+PROJECTNAME := $(basename $(PRJSRC))
+
+# Sanity check: ensure only one .c file is present
+ifneq ($(words $(PRJSRC)),1)
+    $(error Expected exactly one .c file, found: $(PRJSRC))
+endif
 
 # additional includes (e.g. -I/path/to/mydir)
 INC=
