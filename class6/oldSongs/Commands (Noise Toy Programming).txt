@@ -30,12 +30,6 @@ make project=broccoli
 ORANGE/SUNRISE:
 make project=i5_toy_v7
 
-or like this:
-avrdude -c usbtiny -p t85 -P /dev/ttyUSB0 -e -U flash:w:<proj_name>.hex
-
-for "arduino as isp" avrdude -c arduino -p t85 -P /dev/ttyACM0 -b 19200 -e -U flash:w:<proj_name>.hex
-115200 maybe faster baud?
-
 order of pins:
 LtoR
 1) reset
