@@ -2,7 +2,7 @@
 #include <inttypes.h>
 #include <avr/io.h>
 #include <math.h>
-#include <stdlib.h>
+
 
 void delayms(uint16_t millis);
 void delayuss(unsigned int micros);
@@ -72,9 +72,9 @@ int main()
 			}
 			if (!(PINB & 2))
 			{
-				note_count = (Random() % 32) + 1;
-				multiplier = (Random() % 30) + 1;
-				original = (Random() % 5000) + 1;
+				note_count = (Random() % 40) + 1;
+				multiplier = (Random() % 50) + 1;
+				original = (Random() % 500) + 1;
 			}
 		}
 		

@@ -5,7 +5,7 @@
 
 void delayms(uint16_t millis);
 void Delay(unsigned int micros);
-inline unsigned long Random(void);
+static inline __attribute__((always_inline)) unsigned long Random(void);
 
 int main()
 {
@@ -62,7 +62,7 @@ int main()
 
 
 /* at 8 MHz we get 1us per 8 instructions */
-inline void delayus() { asm volatile("nop\nnop\nnop\nnop\n"
+static inline __attribute__((always_inline)) void delayus() { asm volatile("nop\nnop\nnop\nnop\n"
                                      "nop\nnop\nnop\nnop"); }
 
 
@@ -92,7 +92,7 @@ void delayms(uint16_t millis) {
 }
 
 unsigned long NextRandom = 1;
-inline unsigned long Random(void)
+static inline __attribute__((always_inline)) unsigned long Random(void)
 {
    NextRandom = NextRandom * 1103515245 + 12345;
    return ((NextRandom >> 16) & 32767);

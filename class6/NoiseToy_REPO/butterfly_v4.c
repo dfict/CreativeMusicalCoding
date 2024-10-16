@@ -161,7 +161,7 @@ int main()
 }
 
 /* at 8 MHz we get 1us per 8 instructions */
-inline void delayus() { asm volatile("nop\nnop\nnop\nnop\n"
+static inline __attribute__((always_inline)) void delayus() { asm volatile("nop\nnop\nnop\nnop\n"
                                      "nop\nnop\nnop\nnop"); }
 
 

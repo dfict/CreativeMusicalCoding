@@ -26,9 +26,9 @@ HEX_PATH=$(DIRECTORY)/$(FILE_NAME).hex
 PROGRAMMER=usbtiny
 PROGRAMMER_PORT=usb
 
-#experimental? see if it workss
+#experimental? doesn't work
 #PROGRAMMER=arduino
-#PROGRAMMER_PORT=/dev/cu.usbserial*
+#PROGRAMMER_PORT=/dev/cu.usbmodem14101
 #PROGRAMMER_BAUD=19200
 
 all: program
