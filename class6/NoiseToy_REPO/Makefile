@@ -27,6 +27,13 @@ PROGRAMMER_PORT=usb
 #    PROGRAMMER_PORT=usb
 #endif
 
+#experimental? see if it workss
+#PROGRAMMER=arduino
+#PROGRAMMER_PORT=/dev/cu.usbserial*
+#PROGRAMMER_BAUD=19200
+
+
+
 # Tools
 CC=avr-gcc
 OBJCOPY=avr-objcopy

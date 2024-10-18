@@ -39,7 +39,12 @@ int main()
 		if (sample == 0)
 			sample = 1;
 		
-		if (!--sample)
+		if (!--sample) 
+/* same as
+sample = sample - 1;
+if (sample == 0)
+*/
+
 		{
 			sample = period;
 			if (note_on)
