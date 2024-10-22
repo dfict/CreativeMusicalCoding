@@ -1,0 +1,51 @@
+don't modify the makefiles in this folder! they are set for different programmers that you may use. 
+
+INSTRUCTIONS:
+
+Open Terminal and run the setup command (change the path to the current directory). Then run the corresponding command to program a noise toy.
+
+
+SETUP:
+
+Switch to current directory: in Terminal, type "cd " (with a space after "cd") and then drag the current folder into the Terminal window to autocomplete the path to the directory. Then press return/enter.
+
+cd PATH_TO_THIS_DIRECTORY
+
+Makefile:
+pick the makefile you need. 
+USBtinyISP works as is, no mods needed
+for ArduinoasISP, port needs to be specified, so make sure you code in the name of your usb port. (find in terminal with this command: 
+ls /dev/cu.*
+or just look in your arduino app or drives.
+
+Hardware:
+ArduinoasISP may need 3.3v connected to attiny85 manually.
+
+CODE:
+
+In Terminal, run the corresponding "make" command specified below. Copy/paste the line into Terminal, then press return/enter.
+
+MANATEES (BLUE):
+make project=manatee_toy
+
+BUTTERFLY (YELLOW):
+make project=butterfly_v4
+
+ORACLE (GREY):
+make project=stereo85plus_toy
+
+BROCCOLI:
+make project=broccoli
+
+ORANGE/SUNRISE:
+make project=i5_toy_v7
+
+the makefile generates hex from the c file and then removes it.
+
+order of pins:
+LtoR
+1) reset
+2) MOSI
+3) MISO
+4) SCK
+5) GND
