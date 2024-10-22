@@ -12,7 +12,9 @@ Switch to current directory: in Terminal, type "cd " (with a space after "cd") a
 cd PATH_TO_THIS_DIRECTORY
 
 Makefile:
-pick the makefile you need. 
+make sure you Pick the makefile you need, or modify the code accordingly.
+makefile should be called "Makefile" with no file extension, two archived versions are stored in the "makefiles_that_work" folder.
+
 USBtinyISP works as is, no mods needed
 for ArduinoasISP, port needs to be specified, so make sure you code in the name of your usb port. (find in terminal with this command: 
 ls /dev/cu.*
