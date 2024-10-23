@@ -19,6 +19,12 @@ HEX_PATH=$(FILE_NAME).hex
 PROGRAMMER=usbtiny
 PROGRAMMER_PORT=usb
 
+# Programmer. you need to specify the programming port manually. 
+#for example, usbmodem14101 on right side of macbook air, usbmodem14201
+#PROGRAMMER=avrisp
+#PROGRAMMER_PORT=/dev/cu.usbmodem14101 
+#sPROGRAMMER_BAUD=19200
+
 #ifneq ($(wildcard /dev/cu.usbserial-A*),) 
 #    PROGRAMMER=stk500v2
 #    PROGRAMMER_PORT=/dev/cu.usbserial-A*
