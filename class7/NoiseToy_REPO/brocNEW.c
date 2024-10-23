@@ -69,11 +69,13 @@ if (sample == 0)
 			duration = count;// / 2;
 			note_on = 1;
 			
+
+
 			if (!(PINB & 1))
 			{
-				notes[note] = ((Random() % 10) + 1) * multiplier;
-				beat = (Random() % 2000) + 1;
-				beats[note] = (Random() % 4) + 1;
+				notes[note] = ((Random() % 10) + 1) * ((Random() % 10)+1);
+			//	beat = (Random() % 2000) + 1;
+			//	beats[note] = (Random() % 4) + 1;
 			}
 			if (!(PINB & 2))
 			{

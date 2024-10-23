@@ -29,8 +29,12 @@ int main()
 	
 	unsigned long Tempo_Period = 2000, Tempo_Outer = 1, Tempo_Sample = 1;
 	
-	unsigned char Trax_Left[] = {1, 0, 2, 1, 1, 0, 3, 1};
-	unsigned char Trax_Right[] = {0, 1, 0, 1, 1, 2, 3, 1};
+//	unsigned char Trax_Left[] = {1, 0, 2, 1, 1, 0, 3, 1};
+//	unsigned char Trax_Right[] = {0, 1, 0, 1, 1, 2, 3, 1};
+	unsigned char Trax_Left[] = {0, 0, 2, 0, 0, 2, 0, 2};
+	unsigned char Trax_Right[] = {1, 0, 1, 0, 1, 0, 0, 1};
+
+
 	unsigned char Track_Index = -1;
 	
 	unsigned short Snare_Length_Start = 5000;
@@ -147,8 +151,8 @@ int main()
 			{
 				Tempo_Period = Random() / 20 + 0;
 				Bass_End = (Random() % 1400) + 1;
-				Bass_Left_Adder = Random() % 50 + 5;
-				Bass_Right_Adder = Random() % 50 + 5;
+				Bass_Left_Adder = Random() % 100 + 5;
+				Bass_Right_Adder = Random() % 100 + 5;
 			}
 			if ((PINB & 2) == 0)
 			{
@@ -158,7 +162,7 @@ int main()
 					Trax_Left[i] = Random();
 					Trax_Right[i] = Random();
 				}
-				Snare_Length_Start = Random() % 10000 + 100;
+				Snare_Length_Start = Random() % 1000 + 100;
 			}
 		}
 		// if ((PINB & 2) == 0)
