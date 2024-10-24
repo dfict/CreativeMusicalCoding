@@ -16,20 +16,20 @@ int main()
 	DDRB  = (1 << 3) | (1 << 4);
 	PORTB = (1 << 0) | (1 << 1);
 	
-	unsigned long period = 2000, sample = 1, note = -1, count = 1;
+	unsigned long period = 1000, sample = 1, note = -1, count = 1;
 	unsigned long duration = 10000;
 	unsigned long notes[32] = {5, 20, 15, 17};
 	unsigned char note_count = 4;
 	unsigned char val = 0;
 	unsigned char note_on = 1;
-	unsigned long beat = 2000;
+	unsigned long beat = 8000;
 	unsigned char multiplier = 3;
 	unsigned char beats[32];
 	unsigned long original = 2000;
 	
 	for (note = 0; note < 32; note++)
 	{
-		notes[note] = ((Random() % 5) + 1) * 3;
+		notes[note] = ((Random() % 35) + 1) * 3;
 		beats[note] = (Random() % 2) + 1;
 	}
 	note = -1;
@@ -69,13 +69,11 @@ if (sample == 0)
 			duration = count;// / 2;
 			note_on = 1;
 			
-
-
 			if (!(PINB & 1))
 			{
-				notes[note] = ((Random() % 10) + 1) * ((Random() % 10)+1);
-			//	beat = (Random() % 2000) + 1;
-			//	beats[note] = (Random() % 4) + 1;
+				notes[note] = ((Random() % 10) + 1) * multiplier;
+				beat = (Random() % 2000) + 1;
+				beats[note] = (Random() % 4) + 1;
 			}
 			if (!(PINB & 2))
 			{

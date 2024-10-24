@@ -71,11 +71,11 @@ if (sample == 0)
 	
 /*
 Think of it like a music box where:
+
 note is which hole we're currently over
 beats[note] is how many units that note should play
 beat is how long each unit is
-count is counting down until we should move to the next hole
-*/
+count is counting down until we should move to the next hole*/
 
 			if (!(PINB & 1))
 			{
