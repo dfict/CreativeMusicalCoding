@@ -46,6 +46,12 @@ make project=broccoli
 ORANGE/SUNRISE:
 make project=i5_toy_v7
 
+for windows if you installed 
+Min32 Download:
+https://sourceforge.net/projects/mingw/
+the command is:
+min32-make project=xxxx
+
 the makefile generates hex from the c file and then removes it.
 
 order of pins:
