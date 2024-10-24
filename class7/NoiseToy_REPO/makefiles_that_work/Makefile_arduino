@@ -17,7 +17,7 @@ HEX_PATH=$(FILE_NAME).hex
 
 # Programmer. you need to specify the programming port manually.
 PROGRAMMER=avrisp
-PROGRAMMER_PORT=/dev/cu.usbmodem14101
+PROGRAMMER_PORT=/dev/cu.usbmodem14201
 PROGRAMMER_BAUD=19200
 
 # Tools

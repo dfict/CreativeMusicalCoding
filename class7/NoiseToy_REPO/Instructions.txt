@@ -27,6 +27,10 @@ CODE:
 
 In Terminal, run the corresponding "make" command specified below. Copy/paste the line into Terminal, then press return/enter.
 
+if make isn't working, you can try avrdude directly like this:
+
+avrdude -p t85 -c arduino -P COM3 -b 19200 -e -U hfuse:w:0xDF:m -U lfuse:w:0xE2:m -U flash:w:manatee_toy.hex
+
 MANATEES (BLUE):
 make project=manatee_toy
 
