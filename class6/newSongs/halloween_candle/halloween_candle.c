@@ -24,8 +24,8 @@ int main(void) {
 
     // Main loop - 5 minutes each, no pause between
     while (1) {
-        gentle_flicker(3000);   // 5 minutes (3000 * 100ms = 300000ms = 5 minutes)
-        enhanced_candle(600);  // 5 minutes
+     //   gentle_flicker(3000);   // 5 minutes (3000 * 100ms = 300000ms = 5 minutes)
+      //  enhanced_candle(600);  // 5 minutes
         distant_storm(3000);    // 5 minutes
     }
 }
