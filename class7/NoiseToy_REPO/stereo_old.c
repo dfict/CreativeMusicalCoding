@@ -46,6 +46,7 @@ int main()
 		// UPDATE SAMPLES
 		if (Bass_Left_On)
 		{
+			//keep looping until out sample = 0
 			if (!(--Bass_Left_Sample))
 			{
 				if ((Bass_Left_Period += 11) > Bass_End)
@@ -65,17 +66,22 @@ int main()
 					Bass_Right_On = 0;
 				}
 				Bass_Right_Sample = Bass_Right_Period;
+				//osc the output
 				Last_Val_Right = 1 - Last_Val_Right;
 			}
 		}
 		
 		if (Snare_Left_On)
 		{
+			//keep looping until the snare sample counts down to zero
 			if (!(--Snare_Left_Sample))
 			{
+				//randomize the snare sample
 				Snare_Left_Sample = New_Rand / 200;// % 10;
+				//oscillate the output
 				Last_Val_Left = 1 - Last_Val_Left;
 			}
+			//turn off the snare after a while
 			if (!(--Snare_Length))
 			{
 				Snare_Left_On = 0;

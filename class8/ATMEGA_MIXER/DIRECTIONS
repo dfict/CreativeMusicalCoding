@@ -1,0 +1,8 @@
+DIRECTIONS
+
+make program processor=m328p project=noise_disco_mixer_168_w_mono
+
+you could change the processor manually lik	e this or just
+
+use the right chip...168 and do it directly
+ make project=noise_disco_mixer_168_w_mono
