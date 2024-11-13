@@ -25,43 +25,10 @@ ISR(TIMER1_COMPA_vect)
     // Reduce the influence of continuous noise sources
    lowns += (rndm-lowns) / 64;  // Slower update, less influence
     lp1 += (rndm/32 - lp1) / 32; // Slower update, less high-frequency content
-
-// Variations of update weights for lowns and lp1
-// Original:
-// lowns += (rndm-lowns) / 64;
-// lp1 += (rndm/32 - lp1) / 32;
-
+    
 // Slower updates:
  //lowns += (rndm-lowns) / 128; // SOUNDS GREAT WITH NO NOISE!
  //lp1 += (rndm/64 - lp1) / 64;
-
-// Even slower updates:
-// lowns += (rndm-lowns) / 256;
-// lp1 += (rndm/128 - lp1) / 128;
-
-// Faster updates:
- //lowns += (rndm-lowns) / 32;
- //lp1 += (rndm/16 - lp1) / 16;
-
-// Mixed speed updates:
- //lowns += (rndm-lowns) / 128; // mixed speed is right, this is cool.
- //lp1 += (rndm/16 - lp1) / 64;
-
-// Very slow lowns, faster lp1:
-// lowns += (rndm-lowns) / 512;
- //lp1 += (rndm/8 - lp1) / 16;
-
-// Faster lowns, slower lp1:
-// lowns += (rndm-lowns) / 16;
-// lp1 += (rndm/64 - lp1) / 128;
-
-// Extreme slow updates:
-// lowns += (rndm-lowns) / 1024;
-// lp1 += (rndm/512 - lp1) / 512;
-
-// Different scaling for rndm in lp1:
-// lowns += (rndm-lowns) / 64;
-// lp1 += (rndm/4 - lp1) / 32;
 
 // Asymmetric updates:
 //lowns += (rndm-lowns) / 32;
@@ -73,15 +40,8 @@ ISR(TIMER1_COMPA_vect)
     // Mix with more emphasis on bp2 and burst, less on continuous noise
   //  out = 128 + ((bp2/2 + burst + lowns/64 + lp1/64) / 32);
 
-// 10 variations of the final mix
-// out = 128 + ((bp2/2 + burst + lowns/64 + lp1/64) / 32);  // Original
-// out = 128 + ((bp2/2 + burst) / 32);  // No continuous noise
+//variations of the final mix
 // out = 128 + ((bp2/2 + burst + lowns/128 + lp1/128) / 32);  // Less continuous noise
- //out = 128 + ((bp2/2 + burst*2 + lowns/64 + lp1/64) / 32);  // Emphasized burst ±— sounds good!
-// out = 128 + ((bp2/3 + burst + lowns/32 + lp1/32) / 32);  // More continuous noise — lower pitch
-// out = 128 + ((bp2 + burst + lowns/64 + lp1/64) / 32);  // More bp2 influence
-// out = 128 + ((bp2/2 + burst + lowns/64) / 32);  // No lp1
-// out = 128 + ((bp2/2 + burst + lp1/64) / 32);  // No lowns
 // out = 128 + ((bp2/4 + burst*2 + lowns/128 + lp1/128) / 32);  // More burst, less everything else
  out = 128 + ((bp2/2 + burst + (lowns+lp1)/128) / 32);  // Combined lowns and lp1
 

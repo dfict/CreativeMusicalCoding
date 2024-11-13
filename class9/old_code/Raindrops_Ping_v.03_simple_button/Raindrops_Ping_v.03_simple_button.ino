@@ -3,22 +3,23 @@
 #define LED_PORT    PORTB
 #define LED_BIT     5
 #define SPEAKER_PIN 11
+#define BUTTON_PIN  2    // Button pin
 
 uint8_t out;
 int16_t lp1, lp2, bp2, lowns, sah, rndm, lfrt;
 uint16_t phase = 0;
 uint16_t coarsePitch = 1;
 float finePitch = 0.0;
+bool funMode = false;     // Track which mode we're in
+
 
 ISR(TIMER1_COMPA_vect) {
-    // Read analog input and map it to a useful range
-    uint16_t potValue = analogRead(2);
-    
-    // Use potValue to control the rhythm (lfrt reset value)
-  //  uint16_t rhythmControl = map(potValue, 0, 1023, 100, 2000);
-    uint16_t rhythmControl = 800;
-    // Use potValue to control the pitch (phase increment)
-    coarsePitch = map(potValue, 0, 1023, 25, 1000);
+
+    // Use a knob to control the rhythm (lfrt reset value)
+    uint16_t rhythmControl = map(analogRead(3), 0, 1023, 100, 2000);
+  
+    // Use pot to control the pitch (phase increment)
+    coarsePitch = map(analogRead(2), 0, 1023, 25, 1000);
     finePitch = coarsePitch / 100.0;
     
     rndm = rand();
@@ -31,8 +32,13 @@ ISR(TIMER1_COMPA_vect) {
     
     // Mix oscillator with noise for interesting textures
     bp2 = (sah/4 - bp2/32 - lp2) / finePitch + bp2; //finally!
-   lp2 = bp2/2 + lp2;
-   // lp2 = bp2/2 + lp2 + sah; //for fun!
+
+ // Switch between modes based on button state
+    if (funMode) {
+        lp2 = bp2/2 + lp2 + sah;  // Fun mode
+    } else {
+        lp2 = bp2/2 + lp2;        // Normal mode
+    }
 
     lowns += (rndm-lowns) / 64;
     lp1 += (rndm/32 - lp1) / 32;
@@ -106,11 +112,14 @@ void stopPlayback()
 
 
 void setup() {
-    
+    pinMode(BUTTON_PIN, INPUT);  // Button with internal pullup
     startPlayback();
-
 }
 
 void loop() {
-    
+    // Simply toggle mode when button is pressed
+    if (digitalRead(BUTTON_PIN) == LOW) {
+        funMode = !funMode;
+        delay(200);  // Simple debounce
+    }
 }
