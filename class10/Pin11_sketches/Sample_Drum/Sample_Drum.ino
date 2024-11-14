@@ -17,7 +17,7 @@
   int bound;
   bool trig = false;
   int type = false;
-  
+  int tempo;
 
 ISR(TIMER1_COMPA_vect) {
    
@@ -98,8 +98,8 @@ void loop() {
   type = random(0, 4);
   
  // bound = random(9, 17);
-    bound = map(analogRead(5),0, 1023, 9, 60);
-
-  delay (240);
+ bound = map(analogRead(5),0, 1023, 9, 200);
+ tempo = map(analogRead(4),0, 1023, 50, 2000);
+ delay(tempo);
   
 }

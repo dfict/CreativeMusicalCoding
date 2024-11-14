@@ -15,10 +15,10 @@ ISR(TIMER1_COMPA_vect) {
     uint16_t potValue = analogRead(2);
     
     // Use potValue to control the rhythm (lfrt reset value)
-  //  uint16_t rhythmControl = map(potValue, 0, 1023, 100, 2000);
-    uint16_t rhythmControl = 800;
+    uint16_t rhythmControl = map(analogRead(3), 0, 1023, 100, 2000);
+   // uint16_t rhythmControl = 800;
     // Use potValue to control the pitch (phase increment)
-    coarsePitch = map(potValue, 0, 1023, 25, 1000);
+    coarsePitch = map(potValue, 0, 1023, 25, 500);
     finePitch = coarsePitch / 100.0;
     
     rndm = rand();

@@ -19,7 +19,8 @@ ISR(TIMER1_COMPA_vect) {
     }
     
     bp2 = (sah/5 - bp2/32 - lp2) / 2 + bp2;
-    lp2 = bp2/2 + lp2;                   
+    lp2 = bp2/2 + lp2;     
+  //    lp2 = bp2/2 + lp2 + sah;              
     lowns += (rndm-lowns) / 5  + (rndm / 40);
     lp1 += (rndm/8 - lp1)  /  9;
 
