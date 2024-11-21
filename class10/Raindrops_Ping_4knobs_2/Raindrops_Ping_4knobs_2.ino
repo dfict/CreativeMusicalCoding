@@ -7,9 +7,17 @@
 uint8_t out;
 uint8_t unscaledOut;
 int16_t lp1_1, lp2_1, bp2_1, lowns_1, sah_1, rndm_1, lfrt_1;
+int16_t lp1_2, lp2_2, bp2_2, lowns_2, sah_2, rndm_2, lfrt_2;
+
+volatile uint16_t rhythmControl_1;
+volatile uint16_t rhythmControl_2;
+volatile uint16_t pitchControl_1 = 100;
+volatile uint16_t pitchControl_2 = 50;
+
 uint16_t phase_1 = 0;
-uint16_t coarsePitch_1 = 1;
-float finePitch_1 = 0.0;
+uint16_t coarsePitch = 1.0;
+float finePitch_1 = 0.0, finePitch_2 = 0.0;
+
 float blendControl = 0.0; // Single blend control for both sounds
 uint8_t volumeControl;
 
@@ -17,25 +25,25 @@ uint8_t volumeControl;
 ISR(TIMER1_COMPA_vect) {
 
   //implement rhythmic control for tempo control
-  uint16_t rhythmControl = map(analogRead(3), 0, 1023, 100, 2000);
-   
+  uint16_t rhythmControl_1 = map(analogRead(3), 0, 1023, 50, 2000);
+  rhythmControl_2 = rhythmControl_1 / 0.5;
+
   // Use knob to control the blend for both sounds
   blendControl = analogRead(2) / 1023.0; // Map to 0.0 - 1.0 range
     
   //use knob to control picth of filter
-  coarsePitch_1 = map(analogRead(4), 0, 1023, 10, 100);
-  finePitch_1 = coarsePitch_1 / 100.0;
+  coarsePitch = map(analogRead(4), 0, 1023, 1, 100);
+  finePitch_1 = coarsePitch / 100.0;
+  finePitch_2 = finePitch_1 * 1.5;
 
   //volume knob
   volumeControl = map(analogRead(5), 0, 1023, 0, 255);
-
-
    
   // Sound generator 1
   rndm_1 = rand();
     
     if (lfrt_1-- == 0) {
-        lfrt_1 = rhythmControl;
+        lfrt_1 = rhythmControl_1;
         sah_1 = rndm_1;
         LED_PORT ^= 1 << LED_BIT;
     }
@@ -53,8 +61,29 @@ ISR(TIMER1_COMPA_vect) {
     
     int16_t out_1 = ((bp2_1/2 + burst_1 + lowns_1/64 + lp1_1/64) / 32);
 
+ // Sound generator 2
+    rndm_2 = rand();
+    
+    if (lfrt_2-- == 0) {
+        lfrt_2 = rhythmControl_2;
+        sah_2 = rndm_2;
+    }
+  
+    bp2_2 = (sah_2/4 - bp2_2/32 - lp2_2) / finePitch_2 + bp2_2;
+    
+    int32_t lp2_original_2 = bp2_2/2 + lp2_2;
+    int32_t lp2_fun_2 = bp2_2/2 + lp2_1 + sah_2;
+    lp2_2 = (int16_t)((1.0 - blendControl) * lp2_original_2 + blendControl * lp2_fun_2);
+    
+    lowns_2 += (rndm_2-lowns_2) / 64;
+    lp1_2 += (rndm_2/32 - lp1_2) / 32;
+    
+    int16_t burst_2 = (sah_2 - 16384) / 128;
+    
+    int16_t out_2 = ((bp2_2/2 + burst_2 + lowns_2/64 + lp1_2/64) / 32);
+
     // Mix the two sounds
-    unscaledOut = 128 + (out_1 ) / 2;
+    unscaledOut = 64 + (out_1 + out_2) / 2;
     out = 64 + ((unscaledOut * volumeControl) >> 8);
     OCR2A = out;
 }
