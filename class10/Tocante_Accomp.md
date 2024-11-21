@@ -28,6 +28,8 @@ One need not listen to other parts while performing—focus on the stopwatch and
 
 
 
+
+
  
 PART 1
 
@@ -61,8 +63,13 @@ PART 1
 
 07:49 — X
 
+
+
+
  
 PART 2 
+
+
 
 00:07 — 00:12
 
@@ -99,8 +106,13 @@ PART 2
 07:39 — 07:53
 
 
+
+
  
 PART 3
+
+
+
 
 00:03 — 00:13
 
@@ -136,8 +148,13 @@ PART 3
 
 07:30 — 07:37
 
+
+
+
  
 Part 4
+
+
 
 
 
