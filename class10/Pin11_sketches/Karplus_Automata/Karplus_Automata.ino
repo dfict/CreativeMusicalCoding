@@ -1,6 +1,6 @@
-// 2x Karplus-Strong and pseudo Euclidean sequencer //
+// 2x Karplus-Strong and Cellular Automata //
 
-#define SAMPLE_RATE 11025
+#define SAMPLE_RATE 22050
 #define SIZE        256
 #define OFFSET      32
 #define LED_PIN     13
@@ -28,14 +28,11 @@
   int lowpass2 = 1;
   bool trig2 = false;
 
-  int steps = 16;
-  int hits = 9;
-
-  int tempo = 0;
-
-  int nx;
-  int ny;
-  int tx, ty;
+  bool rules[8] = {0,1,1,1,1,0,0,0};
+  
+  bool state[SIZE];
+  bool newstate[SIZE];
+  int i,j,k,temp;
     
 
 ISR(TIMER1_COMPA_vect) {
@@ -136,59 +133,34 @@ void stopPlayback()
 void setup() {
 
   startPlayback();
+  
+  for (i=0;i<SIZE;i++) state[i]= random(2);
 
 }
 
 
 void loop() {
    
-  LED_PORT ^= 1 << LED_BIT;
+  for (j=0;j<SIZE;j++) {
+         
+    k = 4*state[(j-1+SIZE)%SIZE] + 2*state[j] + state[(j+1)%SIZE];
+    
+    newstate[j] = rules[k];
 
-  nx = tx;
-  ny = ty;
-       
-  if (ny == 0) {
-          
-    tx = rand()%steps;
-    ty = hits; 
-          
-  } else { 
-          
-    tx = ny;
-    ty = nx % ny;
-          
   }
 
-  bound1 = map(nx, 0, steps, OFFSET, SIZE);
-  trig1 = true;
+  for (j=0;j<SIZE;j++) state[j] = newstate[j];
   
-  bound2 = map(ny, 0, hits, OFFSET, SIZE);
-  trig2 = true;
-
-  //filter
-  int value = analogRead(3);
-  float falue = map(value, 0, 1023, 1, 3000) / 1000.0;
-  lowpass1 = falue;
-  lowpass2 = falue;
-
-  //tempo
-  int potTempo = analogRead(4);
-  tempo = map(potTempo, 0, 1023, 20, 1000);
-
-  //seed value for RnG (euclid)
-  int hitsPot = analogRead(2);
-  hits = map(hitsPot, 0, 1023, 1, 35);
-  steps = map(hitsPot, 0, 1023, 25, 10);
   
-  //pitch offset
-  int pitchPot = analogRead(5);
-  int pitch = map(pitchPot, 0, 1023, 0, 100);
-  bound1 = bound1 + pitch;
-  bound1 = bound2 + pitch;  
+  LED_PORT ^= 1 << LED_BIT;
+
+  temp = 0;
+
+  for (i = 0; i < SIZE; i++) temp = temp + state[i];
+
+  if (state[0]) { bound1 = random(temp, SIZE); trig1 = true; }
+  if (state[1]) { bound2 = random(OFFSET,   temp); trig2 = true; }
  
- 
-  //global tempo
-  delay (tempo);
-  
+  delay (160);
 
 }

@@ -1,6 +1,6 @@
-// 2x Karplus-Strong and pseudo Euclidean sequencer //
+// 2x Karplus-Strong and Henon fractal //
 
-#define SAMPLE_RATE 11025
+#define SAMPLE_RATE 22050
 #define SIZE        256
 #define OFFSET      32
 #define LED_PIN     13
@@ -28,14 +28,10 @@
   int lowpass2 = 1;
   bool trig2 = false;
 
-  int steps = 16;
-  int hits = 9;
-
-  int tempo = 0;
-
-  int nx;
-  int ny;
-  int tx, ty;
+  float a = 1.4;
+  float b = 0.3;
+  float x = 1.0;
+  float y = 1.0;
     
 
 ISR(TIMER1_COMPA_vect) {
@@ -144,51 +140,23 @@ void loop() {
    
   LED_PORT ^= 1 << LED_BIT;
 
-  nx = tx;
-  ny = ty;
-       
-  if (ny == 0) {
-          
-    tx = rand()%steps;
-    ty = hits; 
-          
-  } else { 
-          
-    tx = ny;
-    ty = nx % ny;
-          
-  }
+  float nx = x;
+  float ny = y;
+  
+  x = 1 + ny - a * pow(nx,2);
+  y = b * nx;
 
-  bound1 = map(nx, 0, steps, OFFSET, SIZE);
+  int xout = 1000 * x;
+  int yout = 1000 * y;
+  
+  bound1 = map(xout, -1500, 1500, OFFSET, SIZE);
   trig1 = true;
   
-  bound2 = map(ny, 0, hits, OFFSET, SIZE);
+  delay (240);
+  
+  bound2 = map(yout, -400, 400, OFFSET, SIZE);
   trig2 = true;
-
-  //filter
-  int value = analogRead(3);
-  float falue = map(value, 0, 1023, 1, 3000) / 1000.0;
-  lowpass1 = falue;
-  lowpass2 = falue;
-
-  //tempo
-  int potTempo = analogRead(4);
-  tempo = map(potTempo, 0, 1023, 20, 1000);
-
-  //seed value for RnG (euclid)
-  int hitsPot = analogRead(2);
-  hits = map(hitsPot, 0, 1023, 1, 35);
-  steps = map(hitsPot, 0, 1023, 25, 10);
-  
-  //pitch offset
-  int pitchPot = analogRead(5);
-  int pitch = map(pitchPot, 0, 1023, 0, 100);
-  bound1 = bound1 + pitch;
-  bound1 = bound2 + pitch;  
  
- 
-  //global tempo
-  delay (tempo);
-  
+  delay (240);
 
 }

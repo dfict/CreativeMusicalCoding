@@ -1,4 +1,4 @@
-// 2x Karplus-Strong and Cellular Automata //
+// 2x Karplus-Strong and pseudo Euclidean sequencer //
 
 #define SAMPLE_RATE 22050
 #define SIZE        256
@@ -28,11 +28,12 @@
   int lowpass2 = 1;
   bool trig2 = false;
 
-  bool rules[8] = {0,1,1,1,1,0,0,0};
-  
-  bool state[SIZE];
-  bool newstate[SIZE];
-  int i,j,k,temp;
+  int steps = 8;
+  int hits = 3;
+
+  int nx;
+  int ny;
+  int tx, ty;
     
 
 ISR(TIMER1_COMPA_vect) {
@@ -133,33 +134,34 @@ void stopPlayback()
 void setup() {
 
   startPlayback();
-  
-  for (i=0;i<SIZE;i++) state[i]= random(2);
 
 }
 
 
 void loop() {
    
-  for (j=0;j<SIZE;j++) {
-         
-    k = 4*state[(j-1+SIZE)%SIZE] + 2*state[j] + state[(j+1)%SIZE];
-    
-    newstate[j] = rules[k];
-
-  }
-
-  for (j=0;j<SIZE;j++) state[j] = newstate[j];
-  
-  
   LED_PORT ^= 1 << LED_BIT;
 
-  temp = 0;
+  nx = tx;
+  ny = ty;
+       
+  if (ny == 0) {
+          
+    tx = rand()%steps;
+    ty = hits; 
+          
+  } else { 
+          
+    tx = ny;
+    ty = nx % ny;
+          
+  }
 
-  for (i = 0; i < SIZE; i++) temp = temp + state[i];
-
-  if (state[0]) { bound1 = random(temp, SIZE); trig1 = true; }
-  if (state[1]) { bound2 = random(OFFSET,   temp); trig2 = true; }
+  bound1 = map(nx, 0, steps, OFFSET, SIZE);
+  trig1 = true;
+  
+  bound2 = map(ny, 0, hits, OFFSET, SIZE);
+  trig2 = true;
  
   delay (160);
 
