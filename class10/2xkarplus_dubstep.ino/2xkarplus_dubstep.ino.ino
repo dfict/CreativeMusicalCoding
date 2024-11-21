@@ -28,18 +28,17 @@
   int lowpass2 = 1;
   bool trig2 = false;
 
-  int steps = 16;
-  int hits = 9;
-
-  int tempo = 0;
-  int dubRAND = 0;
-  int nx;
-  int ny;
-  int tx, ty;
+int steps = 16;
+int hits = 9;
+int tempo = 0;
+int nx, ny, tx, ty;
+int savedTx, savedTy;  // Save these instead
+int repeatCounter = 0; // How many repeats we've done
+int totalRepeats = 1; // How many times to repeat (will be set by dubRAND)
 
 ISR(TIMER1_COMPA_vect) {
    
-  OCR2A = 0xff & ((out1 + out2)>>1);
+  OCR2A = 128 + ((out1 + out2) >> 1);  // Center at 128 instead of 64
 
   if (trig1) {
     
@@ -90,6 +89,8 @@ ISR(TIMER1_COMPA_vect) {
 void startPlayback(){
 
     pinMode(SPEAKER_PIN, OUTPUT);
+
+    
     pinMode(LED_PIN, OUTPUT);
 
     ASSR &= ~(_BV(EXCLK) | _BV(AS2));
@@ -138,60 +139,72 @@ void setup() {
 
 }
 
-
 void loop() {
-   
-  LED_PORT ^= 1 << LED_BIT;
+    LED_PORT ^= 1 << LED_BIT;
+    
+    // Only generate new euclidean values when we're done with repeats
+    if (repeatCounter == 0) {
+        // Calculate new euclidean values
+        nx = tx;
+        ny = ty;
+        
+        if (ny == 0) {
+            tx = rand() % steps;
+            ty = hits;
+        } else {
+            tx = ny;
+            ty = nx % ny;
+        }
+        
+        // Save tx and ty for repeating
+        savedTx = tx;
+        savedTy = ty;
+        
+        // Set up new repeat sequence
+        totalRepeats = random(1, 8); // This is your dubRAND
+        repeatCounter = totalRepeats;
+    } else {
+        // Use saved values instead of calculating new ones
+        tx = savedTx;
+        ty = savedTy;
+        nx = tx;
+        ny = ty;
+    }
 
-  nx = tx;
-  ny = ty;
-       
-  if (ny == 0) {
-          
-    tx = rand()%steps;
-    ty = hits; 
-          
-  } else { 
-          
-    tx = ny;
-    ty = nx % ny;
-          
-  }
-
-  bound1 = map(nx, 0, steps, OFFSET, SIZE);
-  trig1 = true;
-  
-  bound2 = map(ny, 0, hits, OFFSET, SIZE);
-  trig2 = true;
-
-  //filter
-  int value = analogRead(3);
-  float falue = map(value, 0, 1023, 1, 3000) / 1000.0;
-  lowpass1 = falue;
-  lowpass2 = falue;
-
-  //tempo
-  int potTempo = analogRead(4);
-  tempo = map(potTempo, 0, 1023, 10, 1000);
-
-  //seed value for RnG (euclid)
-  int hitsPot = analogRead(2);
-  hits = map(hitsPot, 0, 1023, 1, 35);
-  steps = map(hitsPot, 0, 1023, 25, 10);
-  
-  //pitch offset
-  int pitchPot = analogRead(5);
-  int pitch = map(pitchPot, 0, 1023, 0, 100);
-  bound1 = bound1 + pitch;
-  bound1 = bound2 + pitch;  
-
-  //global tempo
-  dubRAND= random(1,4);
-  tempo = tempo * dubRAND; //add for dubstep!
-  
-// for loop that counts i<output of random   
-//conditions of for loop are repeat the prev pitch
-
-  delay (tempo);
-
+    bound1 = map(nx, 0, steps, OFFSET, SIZE);
+    bound2 = map(ny, 0, hits, OFFSET, SIZE);
+    
+    trig1 = true;
+    trig2 = true;
+    
+    //filter
+    int value = analogRead(3);
+    float falue = map(value, 0, 1023, 1, 3000) / 1000.0;
+    lowpass1 = falue;
+    lowpass2 = falue;
+    
+    //tempo
+    int potTempo = analogRead(4);
+    tempo = map(potTempo, 0, 1023, 10, 1000);
+    
+    //seed value for RnG (euclid)
+    int hitsPot = analogRead(2);
+    hits = map(hitsPot, 0, 1023, 1, 35);
+    steps = map(hitsPot, 0, 1023, 25, 10);
+    
+    //pitch offset
+    int pitchPot = analogRead(5);
+    int pitch = map(pitchPot, 0, 1023, 0, 100);
+    bound1 = bound1 + pitch;
+    bound2 = bound2 + pitch;
+    
+    // Your original dubstep tempo modification
+    tempo = tempo * totalRepeats;
+    
+    // Decrement repeat counter
+    if (repeatCounter > 0) {
+        repeatCounter--;
+    }
+    
+    delay(tempo);
 }
