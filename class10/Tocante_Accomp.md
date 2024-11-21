@@ -27,10 +27,6 @@ Tuning of the synthesizers is pre-determined. But pitch selection is up to the p
 One need not listen to other parts while performing—focus on the stopwatch and play at the written times.
 
 
-
-
-
- 
 PART 1
 
 00:09 — 00:22
@@ -65,8 +61,6 @@ PART 1
 
 
 
-
- 
 PART 2 
 
 
@@ -106,9 +100,6 @@ PART 2
 07:39 — 07:53
 
 
-
-
- 
 PART 3
 
 
@@ -150,8 +141,6 @@ PART 3
 
 
 
-
- 
 Part 4
 
 
