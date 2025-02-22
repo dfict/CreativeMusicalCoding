@@ -38,7 +38,7 @@ int totalRepeats = 1; // How many times to repeat (will be set by dubRAND)
 
 ISR(TIMER1_COMPA_vect) {
    
-  OCR2A = 128 + ((out1 + out2) >> 1);  // Center at 128 instead of 64
+  OCR2A = ((out1 + out2) >> 1);  // Center at 128 instead of 64
 
   if (trig1) {
     
